@@ -24,7 +24,7 @@
 </script>
 
 <div class="min-w-[250px] p-2">
-    <p>Current count: <b>{count}</b></p>
+    <p>Current counts: <b>{count}</b></p>
     <div>
         <button
             class="rounded-sm shadow-sm bg-teal-300 hover:bg-teal-400 focus:bg-teal-400 text-sky-900 transition-colors px-2.5 py-1.5 border-none"

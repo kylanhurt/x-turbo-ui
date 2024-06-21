@@ -3,7 +3,7 @@
     import { storage } from "../storage";
     import Options from "./Options.svelte";
 
-    let count = 0;
+    let count = 99;
 
     onMount(() => {
         storage.get().then((storage) => (count = storage.count));
