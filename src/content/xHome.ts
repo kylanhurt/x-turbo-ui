@@ -1,4 +1,5 @@
 import Overlay from "../components/Overlay.svelte";
+import UserNoteInput from "../components/UserNoteInput.svelte";
 import { storage } from "../storage";
 
 // Content scripts
@@ -63,4 +64,23 @@ const watchTimelineForNewTweets = () => {
   
   // Start observing the target node for configured mutations
   observer.observe(targetNode, config);
+}
+
+// find hover cards
+setInterval(() => {
+  const [hoverCardParent] = document.querySelectorAll('[data-testid="hoverCardParent"]')
+  if (!hoverCardParent) return
+  console.log('hoverCardParent', hoverCardParent)
+  hoverCardParentToUsername(hoverCardParent)
+}, 1000)
+
+const hoverCardParentToUsername = (hoverCardParent: Element) => {
+  const firstSibling = hoverCardParent.firstChild.firstChild.firstChild.firstChild.firstChild.children[1]
+  console.log('firstSibling: ', firstSibling)
+  const secondSibling = firstSibling.firstChild.firstChild.children[1]
+  console.log('secondSibling: ', secondSibling)
+  const usernameNode = secondSibling.firstChild.firstChild.firstChild.firstChild
+  const popupUsername = usernameNode.textContent.replace('@', '')
+  console.log('popupUsername', popupUsername)
+  new UserNoteInput({ target: usernameNode })
 }
