@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { Input } from '$lib/components/ui/input/index.js';
+  import { Button } from "$lib/components/ui/button";
   let inputValue = '';
 
   function handleSubmit(e: Event) {
@@ -8,7 +10,8 @@
   }
 </script>
 
-<form on:submit={handleSubmit}>
-  <input type="text" bind:value={inputValue} placeholder="Enter your note" />
-  <button type="submit">Submit</button>
-</form>
+<div class="twp">
+  <form on:submit={handleSubmit} class='user-note-input'>
+    <Input type="text" bind:value={inputValue} placeholder="Enter your note" class="max-w-xs" />
+  </form>
+</div>
