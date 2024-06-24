@@ -1,7 +1,7 @@
-<script>
+<script lang="ts">
   let inputValue = '';
 
-  function handleSubmit(e) {
+  function handleSubmit(e: Event) {
     e.preventDefault();
     // Handle form submission here
     console.log('Submitted:', inputValue);
