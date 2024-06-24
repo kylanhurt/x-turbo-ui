@@ -1,4 +1,8 @@
 import { fontFamily } from "tailwindcss/defaultTheme";
+import {
+  scopedPreflightStyles,
+  isolateInsideOfContainer, // there are also isolateOutsideOfContainer and isolateForComponents
+} from 'tailwindcss-scoped-preflight';
 
 /** @type {import('tailwindcss').Config} */
 const config = {

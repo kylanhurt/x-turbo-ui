@@ -29,6 +29,7 @@
     "vite": "4.2.3"
   },
   "dependencies": {
+    "bits-ui": "^0.21.10",
     "clsx": "^2.1.1",
     "path": "^0.12.7",
     "tailwind-merge": "^2.3.0",
