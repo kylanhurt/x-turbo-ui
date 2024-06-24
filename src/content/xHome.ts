@@ -67,20 +67,30 @@ const watchTimelineForNewTweets = () => {
 }
 
 // find hover cards
+let hoverCardParent: any
 setInterval(() => {
-  const [hoverCardParent] = document.querySelectorAll('[data-testid="hoverCardParent"]')
-  if (!hoverCardParent) return
-  console.log('hoverCardParent', hoverCardParent)
-  hoverCardParentToUsername(hoverCardParent)
+  findHoverCardAndExecute()
 }, 1000)
+
+const findHoverCardAndExecute = () => {
+  // can optimize later by only searching with specific area
+  const [foundHoverCardParent] = document.querySelectorAll('[data-testid="hoverCardParent"]')
+  if (!foundHoverCardParent) return
+  // if foundHoverCardParent is equal to hoverCardParent
+  if (foundHoverCardParent.isEqualNode(hoverCardParent)) return
+  hoverCardParent = foundHoverCardParent
+  hoverCardParentToUsername(hoverCardParent)
+}
 
 const hoverCardParentToUsername = (hoverCardParent: Element) => {
   const firstSibling = hoverCardParent.firstChild.firstChild.firstChild.firstChild.firstChild.children[1]
   console.log('firstSibling: ', firstSibling)
+  const secondParent = firstSibling.firstChild.firstChild
   const secondSibling = firstSibling.firstChild.firstChild.children[1]
   console.log('secondSibling: ', secondSibling)
   const usernameNode = secondSibling.firstChild.firstChild.firstChild.firstChild
   const popupUsername = usernameNode.textContent.replace('@', '')
   console.log('popupUsername', popupUsername)
-  new UserNoteInput({ target: usernameNode })
+  new UserNoteInput({ target: secondParent })
+
 }
