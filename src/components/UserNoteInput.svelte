@@ -10,8 +10,8 @@
   }
 </script>
 
-<div class="twp">
-  <form on:submit={handleSubmit} class='user-note-input'>
-    <Input type="text" bind:value={inputValue} placeholder="Enter your note" class="max-w-xs" />
+<div class="twp block">
+  <form on:submit={handleSubmit} class='user-note-input mt-6'>
+    <Input type="text" bind:value={inputValue} placeholder="Note" class="max-w-xs" />
   </form>
 </div>

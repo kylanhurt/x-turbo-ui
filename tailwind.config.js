@@ -13,7 +13,12 @@ const config = {
       isolationStrategy: isolateInsideOfContainer('.twp'),
     }),
 	],
-	safelist: ["dark"],
+	safelist: [
+		"dark",
+		{
+			pattern: '*',
+		}
+	],
 	theme: {
 		container: {
 			center: true,

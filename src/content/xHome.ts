@@ -30,7 +30,7 @@ let timelineMountInterval = setInterval(() => {
     clearInterval(timelineMountInterval)
     watchTimelineForNewTweets()
   }
-}, 1000)
+}, 5000)
 
 const getUsernameOfTweet = (tweetNode) => {
   const userNameArea = tweetNode.querySelector('[data-testid="User-Name"]')
