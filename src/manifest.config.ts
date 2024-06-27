@@ -27,6 +27,10 @@ export default defineManifest(async (env) => ({
             matches: ["https://*/*"],
             js: ["src/content/index.ts"],
         },
+        {
+            matches: ["https://x.com/home"],
+            js: ["src/content/xHome.ts"],
+        },
     ],
     background: {
         service_worker: "src/background/index.ts",
