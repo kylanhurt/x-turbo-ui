@@ -7,7 +7,6 @@ import { storage } from "../storage";
 
 // Some global styles on the page
 import "../tailwind.css";
-import { debounce } from "../util/util";
 import "./styles.css";
 
 // Some JS on the page
