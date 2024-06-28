@@ -11,7 +11,7 @@
 </script>
 
 <div class="twp block">
-  <form on:submit={handleSubmit} class='user-note-input mt-6'>
+  <form on:submit={handleSubmit} class='user-note-input mt-2'>
     <Input type="text" bind:value={inputValue} placeholder="Note" class="max-w-xs" />
   </form>
 </div>
