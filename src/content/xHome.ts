@@ -1,3 +1,4 @@
+import { hoverCardParentToNoteParent, hoverCardParentToUsernameNode, primaryColumnToTimeline, usernameAreaToUsername } from "src/util/traversal";
 import Overlay from "../components/Overlay.svelte";
 import UserNoteInput from "../components/UserNoteInput.svelte";
 import { storage } from "../storage";
@@ -24,7 +25,11 @@ const config = { attributes: false, childList: true, subtree: false };
 
 let timeline: HTMLElement | null = null
 let timelineMountInterval = setInterval(() => {
-  timeline = document.querySelector('[aria-label="Timeline: Your Home Timeline"]')
+  // find primary column
+  const primaryColumn = document.querySelector('[data-testid="primaryColumn"]')
+  if (!primaryColumn) return
+  // navigate from primaryColumn to timeline
+  timeline = primaryColumnToTimeline(primaryColumn)
   if (timeline) {
     clearInterval(timelineMountInterval)
     watchTimelineForNewTweets()
@@ -34,7 +39,7 @@ let timelineMountInterval = setInterval(() => {
 const getUsernameOfTweet = (tweetNode) => {
   const userNameArea = tweetNode.querySelector('[data-testid="User-Name"]')
   // console.log('userNameArea', userNameArea)
-  const username = userNameArea.children[1].children[0].children[0].querySelector('span').textContent.replace('@', '')
+  const username = usernameAreaToUsername(userNameArea)
   console.log('username', username)
   // const username = userNameArea.textContent
   return username
@@ -82,14 +87,9 @@ const findHoverCardAndExecute = () => {
 }
 
 const hoverCardParentToUsername = (hoverCardParent: Element) => {
-  const firstSibling = hoverCardParent.firstChild.firstChild.firstChild.firstChild.firstChild.children[1]
-  console.log('firstSibling: ', firstSibling)
-  const secondParent = firstSibling.firstChild.firstChild
-  const secondSibling = firstSibling.firstChild.firstChild.children[1]
-  console.log('secondSibling: ', secondSibling)
-  const usernameNode = secondSibling.firstChild.firstChild.firstChild.firstChild
+  const usernameNode = hoverCardParentToUsernameNode(hoverCardParent)
   const popupUsername = usernameNode.textContent.replace('@', '')
   console.log('popupUsername', popupUsername)
+  const secondParent = hoverCardParentToNoteParent(hoverCardParent)
   new UserNoteInput({ target: secondParent })
-
 }
