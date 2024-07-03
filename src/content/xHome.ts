@@ -7,11 +7,14 @@ import UserNoteInput from "../components/UserNoteInput.svelte";
 // Some global styles on the page
 import "../tailwind.css";
 import "./styles.css";
+import axios from "axios";
 
 // Some JS on the page
 // storage.get().then(console.log);
 console.log('in xHome')
 // data-testid="User-Name"
+
+const authorTargetNotes = {}
 
 const visibleUsernames = []
 
@@ -44,19 +47,42 @@ const getUsernameOfTweet = (tweetNode) => {
 
 }
 
+const fetchAuthorTargetNotesViaTarget = async (target: string) => {
+  try {
+    const { selfUsername } = await chrome.storage.local.get('selfUsername')
+    const { data } = await axios.get(`${import.meta.env.VITE_API_DOMAIN}/notes/author-target`, {
+      params: {
+        target: target.toLowerCase(),
+        author: selfUsername.toLowerCase()
+      }
+    })
+    return data
+  } catch (err) {
+    console.error('fetchUserTargetNotes error', err)
+  }
+}
+
 const watchTimelineForNewTweets = () => {
   if (!timeline) return
   const targetNode = timeline.firstChild as HTMLElement
 
   let lastNode
-  const callback = (mutationList, observer) => {
+  const callback = async (mutationList, observer) => {
     for (const mutation of mutationList) {
       lastNode = mutation.addedNodes[0]
       // get username of each tweet
       const usernameArray = []
       for (const tweet of mutation.addedNodes) {
-        const username = getUsernameOfTweet(tweet)
-        usernameArray.push(username)
+        const targetUsername: string = getUsernameOfTweet(tweet)
+        const notes = await fetchAuthorTargetNotesViaTarget(targetUsername)
+        console.log('notes', notes)
+        if (notes.length > 0) {
+          authorTargetNotes[targetUsername] = notes
+          chrome.storage.local.set({ authorTargetNotes })
+          console.log('authorTargetNotes', authorTargetNotes)
+          // get author target notes and inject into Tweet?
+        }
+        usernameArray.push(targetUsername)
       }
     }
   };
@@ -89,5 +115,5 @@ const hoverCardParentToUsername = (hoverCardParent: Element) => {
   const popupUsername = usernameNode.textContent.replace('@', '')
   console.log('popupUsername', popupUsername)
   const secondParent = hoverCardParentToNoteParent(hoverCardParent)
-  new UserNoteInput({ target: secondParent, props: { username: popupUsername }})
+  new UserNoteInput({ target: secondParent, props: { targetUsername: popupUsername }})
 }
