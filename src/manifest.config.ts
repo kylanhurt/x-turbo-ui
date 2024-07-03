@@ -12,8 +12,8 @@ const [major, minor, patch] = version
 
 export default defineManifest(async (env) => ({
     manifest_version: 3,
-    name: name,
-    description: description,
+    name,
+    description,
     version: `${major}.${minor}.${patch}`,
     version_name: version,
     icons: {
@@ -30,6 +30,10 @@ export default defineManifest(async (env) => ({
         {
             matches: ["https://x.com/home"],
             js: ["src/content/xHome.ts"],
+        },
+        {
+            matches: ["https://x.com/*"],
+            js: ["src/content/x.ts"],
         },
     ],
     background: {

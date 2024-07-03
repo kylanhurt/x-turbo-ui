@@ -1,7 +1,5 @@
-import { hoverCardParentToNoteParent, hoverCardParentToUsernameNode, primaryColumnToTimeline, usernameAreaToUsername } from "src/util/traversal";
-import Overlay from "../components/Overlay.svelte";
+import { hoverCardParentToNoteParent, hoverCardParentToUsernameNode, primaryColumnToTimeline, usernameAreaToUsername } from "../util";
 import UserNoteInput from "../components/UserNoteInput.svelte";
-import { storage } from "../storage";
 
 // Content scripts
 // https://developer.chrome.com/docs/extensions/mv3/content_scripts/
@@ -91,5 +89,5 @@ const hoverCardParentToUsername = (hoverCardParent: Element) => {
   const popupUsername = usernameNode.textContent.replace('@', '')
   console.log('popupUsername', popupUsername)
   const secondParent = hoverCardParentToNoteParent(hoverCardParent)
-  new UserNoteInput({ target: secondParent })
+  new UserNoteInput({ target: secondParent, props: { username: popupUsername }})
 }

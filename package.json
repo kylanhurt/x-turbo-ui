@@ -28,6 +28,7 @@
         "vite": "4.2.3"
     },
     "dependencies": {
+        "axios": "^1.7.2",
         "bits-ui": "^0.21.10",
         "clsx": "^2.1.1",
         "tailwind-variants": "^0.2.1",

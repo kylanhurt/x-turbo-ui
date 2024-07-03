@@ -7,6 +7,7 @@
 	type $$Events = InputEvents;
 
 	let className: $$Props["class"] = undefined;
+	let isProcessing: boolean = false;
 	export let value: $$Props["value"] = undefined;
 	export { className as class };
 
@@ -61,3 +62,12 @@
 	on:wheel|passive
 	{...$$restProps}
 />
+
+<style>
+.loading {    
+	background-image: url("/src/assets/icons/icon-16.png");
+	background-size: 25px 25px;
+	background-position:right center;
+	background-repeat: no-repeat;
+}
+</style>
