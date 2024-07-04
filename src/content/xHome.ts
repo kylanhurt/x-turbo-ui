@@ -1,4 +1,4 @@
-import { hoverCardParentToNoteParent, hoverCardParentToUsernameNode, primaryColumnToTimeline, usernameAreaToUsername } from "../util";
+import { fetchAuthorTargetNotesViaTarget, hoverCardParentToNoteParent, hoverCardParentToUsernameNode, primaryColumnToTimeline, usernameAreaToUsername } from "../util";
 import UserNoteInput from "../components/UserNoteInput.svelte";
 
 // Content scripts
@@ -14,7 +14,7 @@ import axios from "axios";
 console.log('in xHome')
 // data-testid="User-Name"
 
-const authorTargetNotes = {}
+const authorNotes = {}
 
 const visibleUsernames = []
 
@@ -47,21 +47,6 @@ const getUsernameOfTweet = (tweetNode) => {
 
 }
 
-const fetchAuthorTargetNotesViaTarget = async (target: string) => {
-  try {
-    const { selfUsername } = await chrome.storage.local.get('selfUsername')
-    const { data } = await axios.get(`${import.meta.env.VITE_API_DOMAIN}/notes/author-target`, {
-      params: {
-        target: target.toLowerCase(),
-        author: selfUsername.toLowerCase()
-      }
-    })
-    return data
-  } catch (err) {
-    console.error('fetchUserTargetNotes error', err)
-  }
-}
-
 const watchTimelineForNewTweets = () => {
   if (!timeline) return
   const targetNode = timeline.firstChild as HTMLElement
@@ -74,12 +59,13 @@ const watchTimelineForNewTweets = () => {
       const usernameArray = []
       for (const tweet of mutation.addedNodes) {
         const targetUsername: string = getUsernameOfTweet(tweet)
-        const notes = await fetchAuthorTargetNotesViaTarget(targetUsername)
+        const { selfUsername } = await chrome.storage.local.get('selfUsername')
+        const notes = await fetchAuthorTargetNotesViaTarget(selfUsername.toLowerCase(), targetUsername.toLowerCase())
         console.log('notes', notes)
         if (notes.length > 0) {
-          authorTargetNotes[targetUsername] = notes
-          chrome.storage.local.set({ authorTargetNotes })
-          console.log('authorTargetNotes', authorTargetNotes)
+          authorNotes[targetUsername] = notes
+          chrome.storage.local.set({ authorNotes })
+          console.log('authorNotes', authorNotes)
           // get author target notes and inject into Tweet?
         }
         usernameArray.push(targetUsername)
@@ -98,7 +84,7 @@ const watchTimelineForNewTweets = () => {
 let hoverCardParent: any
 setInterval(() => {
   findHoverCardAndExecute()
-}, 1000)
+}, 10)
 
 const findHoverCardAndExecute = () => {
   // can optimize later by only searching with specific area
