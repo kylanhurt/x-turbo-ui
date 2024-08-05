@@ -1,9 +1,9 @@
 type IStorage = {
-    count: number;
+    user: any;
 };
 
 const defaultStorage: IStorage = {
-    count: 0,
+    user: undefined,
 };
 
 export const storage = {

@@ -53,7 +53,7 @@
       });
       const notes = await fetchAuthorTargetNotesViaTarget(selfUsername.toLowerCase(), targetUsername.toLowerCase())
       console.log('UserNoteInput post-post notes: ', notes)
-      if (notes.length > 0) {
+      if (notes?.length > 0) {
         console.log('setting authorTargetNotes:', notes)
         // get authorNotes from localStorage
         const { authorNotes } = await chrome.storage.local.get('authorNotes');

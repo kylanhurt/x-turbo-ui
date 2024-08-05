@@ -13,6 +13,6 @@ addEventListener("load", async (event) => {
 
 const getSelfUsername = () => {
   const accountSwitcherButton = document.querySelector("[data-testid='SideNav_AccountSwitcher_Button")
-  const selfUsername = accountSwitcherButton.children[1].firstChild.children[1].firstChild.firstChild.firstChild.textContent.replace('@', '')
+  const selfUsername = accountSwitcherButton?.children[1]?.firstChild?.children[1]?.firstChild?.firstChild?.firstChild?.textContent.replace('@', '')
   return selfUsername
 }

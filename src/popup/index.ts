@@ -9,10 +9,10 @@ function render() {
     const target = document.getElementById("app");
 
     if (target) {
-        storage.get().then(({ count }) => {
+        storage.get().then(({ user }) => {
             new Options({
                 target,
-                props: { count },
+                props: { user },
             });
         });
     }

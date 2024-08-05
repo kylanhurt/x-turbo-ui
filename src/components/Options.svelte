@@ -1,49 +1,45 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
     import { storage } from "../storage";
+    import { Button } from '$lib/components/ui/button/index.js';
+    import axios from 'axios'
+    const VITE_API_DOMAIN = import.meta.env.VITE_API_DOMAIN
 
-    export let count: number;
-    let successMessage: string | null = null;
+    export let user
+    let url
+    let tokenSecret
 
-    function increment() {
-        count += 1;
+    const fetchTwitterSigninUrl = async () => {
+        console.log('onMounted fetchTwitterSigninUrl')
+        // get random string as ID for this request
+        const oauthRequestID = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+        console.log('oauthRequestID:', oauthRequestID)
+        chrome.storage.local.set({ oauthRequestID })
+        try {
+            ({ data: { tokenSecret, url } } = await axios.get(`${VITE_API_DOMAIN}/twitter/request-token?rand=${oauthRequestID}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }))
+            console.log('fetchTwitterSigninUrl tokenSecret, url:', tokenSecret, url)
+        } catch (err) {
+            console.error(err)
+        }
     }
+    console.log('Options.svelte render')
+    onMount(() => {
+        console.log('Options.svelte onMount')
+        fetchTwitterSigninUrl()
+    })
 
-    function decrement() {
-        count -= 1;
-    }
-
-    function save() {
-        storage.set({ count }).then(() => {
-            successMessage = "Options saved!";
-
-            setTimeout(() => {
-                successMessage = null;
-            }, 1500);
-        });
-    }
 </script>
 
 <div class="min-w-[250px] p-2">
-    <p>Current count: <b>{count}</b></p>
-    <div>
-        <button
-            class="rounded-sm shadow-sm bg-teal-300 hover:bg-teal-400 focus:bg-teal-400 text-sky-900 transition-colors px-2.5 py-1.5 border-none"
-            on:click={decrement}
-        >
-            -
-        </button>
-        <button
-            class="rounded-sm shadow-sm bg-teal-300 hover:bg-teal-400 focus:bg-teal-400 text-sky-900 transition-colors px-2.5 py-1.5 border-none"
-            on:click={increment}
-        >
-            +
-        </button>
-        <button
-            class="rounded-sm shadow-sm bg-teal-300 hover:bg-teal-400 focus:bg-teal-400 text-sky-900 transition-colors px-2.5 py-1.5 border-none"
-            on:click={save}
-        >
-            Save
-        </button>
-        {#if successMessage}<span class="text-green-400 font-bold">{successMessage}</span>{/if}
-    </div>
+    {#if user}
+        User Info
+    {:else}
+        <a href={url} target="_blank">
+            Log in
+        </a>
+    {/if}
 </div>
