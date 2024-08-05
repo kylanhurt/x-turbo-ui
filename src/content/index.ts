@@ -5,10 +5,11 @@ import { storage } from "../storage";
 // https://developer.chrome.com/docs/extensions/mv3/content_scripts/
 
 // Some global styles on the page
+import "../tailwind.css";
 import "./styles.css";
 
 // Some JS on the page
 storage.get().then(console.log);
 
 // Some svelte component on the page
-new Overlay({ target: document.body });
+// new Overlay({ target: document.body });
