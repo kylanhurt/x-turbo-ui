@@ -1,4 +1,10 @@
-import { fetchAuthorTargetNotesViaTarget, hoverCardParentToNoteParent, hoverCardParentToUsernameNode, primaryColumnToTimeline, usernameAreaToUsername } from "../util";
+import {
+  fetchAuthorTargetNotesViaTarget,
+  hoverCardParentToNoteParent,
+  hoverCardParentToUsernameNode,
+  primaryColumnToTimeline,
+  usernameAreaToUsername
+} from "../util";
 import UserNoteInput from "../components/UserNoteInput.svelte";
 
 // Content scripts
@@ -16,12 +22,6 @@ console.log('in xHome')
 
 const authorNotes = {}
 
-const visibleUsernames = []
-
-const getUsernameFromNode = (node) => {
-
-}
-
 const config = { attributes: false, childList: true, subtree: false };
 
 let timeline: HTMLElement | null = null
@@ -34,17 +34,46 @@ let timelineMountInterval = setInterval(() => {
   if (timeline) {
     clearInterval(timelineMountInterval)
     watchTimelineForNewTweets()
+    const existingTweetUsernames = getExistingTimelineTweets(timeline)
+    console.log('existingTweetUsernames', existingTweetUsernames)
+
   }
 }, 5000)
 
-const getUsernameOfTweet = (tweetNode) => {
-  const userNameArea = tweetNode.querySelector('[data-testid="User-Name"]')
-  // console.log('userNameArea', userNameArea)
-  const username = usernameAreaToUsername(userNameArea)
+setInterval(() => {
+  chrome.storage.local.get('authorNotes', console.log)
+}, 10000)
+
+const getUsernameOfTweet = (tweetNode): string | null => {
+  const usernameArea = tweetNode.querySelector('[data-testid="User-Name"]')
+  if (!usernameArea) return null
+  const username = usernameAreaToUsername(usernameArea)
   console.log('username', username)
   // const username = userNameArea.textContent
   return username
+}
 
+const getAuthorTargetNotesAndStore = async (targetUsername: string) => {
+  const { selfUsername } = await chrome.storage.local.get('selfUsername')
+  const notes = await fetchAuthorTargetNotesViaTarget(selfUsername.toLowerCase(), targetUsername.toLowerCase())
+  if (notes.length > 0) {
+    console.log('notes', notes)
+    authorNotes[targetUsername] = notes
+    chrome.storage.local.set({ authorNotes })
+    console.log('authorNotes', authorNotes)
+  }
+}
+
+const getExistingTimelineTweets = (timeline) => {
+  if (!timeline) return
+  const tweets = timeline.firstChild.children
+  const usernames = []
+  for (const tweet of tweets) {
+    const targetUsername = getUsernameOfTweet(tweet)
+    if (!targetUsername) continue
+    usernames.push(targetUsername)
+  }
+  return usernames
 }
 
 const watchTimelineForNewTweets = () => {
@@ -56,19 +85,10 @@ const watchTimelineForNewTweets = () => {
     for (const mutation of mutationList) {
       lastNode = mutation.addedNodes[0]
       // get username of each tweet
-      const usernameArray = []
       for (const tweet of mutation.addedNodes) {
-        const targetUsername: string = getUsernameOfTweet(tweet)
-        const { selfUsername } = await chrome.storage.local.get('selfUsername')
-        const notes = await fetchAuthorTargetNotesViaTarget(selfUsername.toLowerCase(), targetUsername.toLowerCase())
-        console.log('notes', notes)
-        if (notes.length > 0) {
-          authorNotes[targetUsername] = notes
-          chrome.storage.local.set({ authorNotes })
-          console.log('authorNotes', authorNotes)
-          // get author target notes and inject into Tweet?
-        }
-        usernameArray.push(targetUsername)
+        const targetUsername = getUsernameOfTweet(tweet)
+        if (!targetUsername) continue
+        getAuthorTargetNotesAndStore(targetUsername)
       }
     }
   };

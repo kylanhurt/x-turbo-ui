@@ -3,7 +3,7 @@ export const primaryColumnToTimeline = (primaryColumnNode: Element) => {
   return timeline
 }
 
-export const usernameAreaToUsername = (usernameAreaNode: Element) => {
+export const usernameAreaToUsername = (usernameAreaNode: Element): string | null => {
   const username = usernameAreaNode.children[1].children[0].children[0].querySelector('span').textContent.replace('@', '')
   return username
 }

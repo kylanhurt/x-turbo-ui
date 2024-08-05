@@ -4,7 +4,7 @@ addEventListener("load", async (event) => {
   const selfUsername = getSelfUsername().toLowerCase()
   console.log('content/x.ts, selfUsername', selfUsername)
   // set to chrome session storage
-  await chrome.storage.local.set({ selfUsername })
+  await chrome.storage.local.set({ selfUsername }).catch(err => console.error('content/x.ts, error setting selfUsername', err))
   // get from chrome session storage
   chrome.storage.local.get('selfUsername', (result) => {
     console.log('content/x.ts, local storage is ', result);
