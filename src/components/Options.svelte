@@ -3,6 +3,7 @@
     import { storage } from "../storage";
     import { Button } from '$lib/components/ui/button/index.js';
     import axios from 'axios'
+    
     const VITE_API_DOMAIN = import.meta.env.VITE_API_DOMAIN
 
     export let user
@@ -21,6 +22,27 @@
                     'Content-Type': 'application/json',
                 }
             }))
+            // get oauth_token query param from url
+            const urlParams = new URLSearchParams(url.split('?')[1])
+            const oauthToken = urlParams.get('oauth_token')
+            const checkIfValidated = async () => {
+                try {
+                    const { data: { isValidated, user } } = await axios.get(`${VITE_API_DOMAIN}/twitter/validated?oauth_token=${oauthToken}`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    console.log('isValidated:', isValidated)
+                    if (isValidated) {
+                        chrome.storage.local.set({ user })
+                    } else {
+                        console.log('not validated yet')
+                        setTimeout(checkIfValidated, 3000)
+                    }
+                } catch (err) {
+                    console.error(err)
+                }
+            }
             console.log('fetchTwitterSigninUrl tokenSecret, url:', tokenSecret, url)
         } catch (err) {
             console.error(err)
