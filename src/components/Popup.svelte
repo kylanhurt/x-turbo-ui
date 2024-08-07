@@ -29,32 +29,28 @@
         }
     }
     console.log('fetchTwitterSigninUrl Popup.svelte render')
-    onMount(() => {
+    onMount(async () => {
         console.log('Popup.svelte onMount')
-        fetchTwitterSigninUrl()
+        const { user: storedUser } = await chrome.storage.local.get('user')
+        if (storedUser) user = storedUser
+        else fetchTwitterSigninUrl()
+
     })
 
-    const startValidationPolling = async () => {
-        console.log('in startValidationPolling')
-        console.warn('in startValidationPolling')
-        // get oauth_token query param from url
-        const urlParams = new URLSearchParams(url.split('?')[1])
-        const oauthToken = urlParams.get('oauth_token')
-        const unixTimestamp = new Date().getTime()
-        console.log('startValidationPolling unixTimestamp', unixTimestamp)
-        const expires = 15 * 60 * 1000 + unixTimestamp
-        chrome.storage.local.set({ validationOauthToken: `${oauthToken}:${expires}` })
-        checkIfValidated(oauthToken, 3000, expires)
-        window.open(url, '_blank')
+    const sendStartValidationPollingMessage = async () => {
+        if (!url) throw new Error('sendStartValidationPollingMessage url is not defined')
+        console.log('first sendStartValidationPollingMessage executing', url)
+        await chrome.runtime.sendMessage({ type: "startValidationPolling", data: { url } })
+        open(url, '_blank')
     }
 
 </script>
 
 <div class="min-w-[250px] p-2">
     {#if user}
-        Popup User Info
+        {JSON.stringify(user)}
     {:else}
-        <button on:click={() => startValidationPolling()}>
+        <button on:click={sendStartValidationPollingMessage}>
             Popup Log in
         </button>
     {/if}

@@ -12,7 +12,7 @@ export const fetchAuthorTargetNotesViaTarget = async (author: string, target: st
     })
     return data
   } catch (err) {
-    console.error('fetchUserTargetNotes error', JSON.stringify(err))
+    console.error('fetchAuthorTargetNotes error', JSON.stringify(err))
   }
 }
 
@@ -29,7 +29,7 @@ export const checkIfValidated = async (oauth_token: string, interval?: number, e
       })
       console.log('checkIfValidated isValidated:', isValidated)
       if (isValidated) {
-          chrome.storage.local.set(user)
+          chrome.storage.local.set({ user })
           chrome.storage.local.remove('validationOauthToken')
           console.log('checkIfValidated validated with user: ', user)
       } else {
@@ -39,4 +39,18 @@ export const checkIfValidated = async (oauth_token: string, interval?: number, e
   } catch (err) {
       console.error(err)
   }
+}
+
+export const startValidationPolling = async (url: string) => {
+  console.log('in startValidationPolling')
+  console.warn('in startValidationPolling')
+  // get oauth_token query param from url
+  const urlParams = new URLSearchParams(url.split('?')[1])
+  const oauthToken = urlParams.get('oauth_token')
+  // what if no oauthToken?
+  const unixTimestamp = new Date().getTime()
+  console.log('startValidationPolling unixTimestamp', unixTimestamp)
+  const expires = 15 * 60 * 1000 + unixTimestamp
+  chrome.storage.local.set({ validationOauthToken: `${oauthToken}:${expires}` })
+  checkIfValidated(oauthToken, 3000, expires)
 }

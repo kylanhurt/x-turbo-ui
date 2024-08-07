@@ -1,4 +1,4 @@
-import { checkIfValidated } from "../util";
+import { checkIfValidated, startValidationPolling } from "../util";
 import { storage } from "../storage";
 
 // Background service workers
@@ -30,4 +30,13 @@ chrome.storage.local.get(['user', 'validationOauthToken']).then((data) => {
             checkIfValidated(token, 3000, expirationTimestamp)
         }
     }
-  });
+});
+
+chrome.runtime.onMessage.addListener(
+    (request, sender) => {
+        // if not from us then ignore
+        if (sender.id != chrome.runtime.id) return
+        const { type, data: { url } } = request
+        if (type === 'startValidationPolling') startValidationPolling(url)
+    }
+  );
