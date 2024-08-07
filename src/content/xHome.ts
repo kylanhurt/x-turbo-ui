@@ -17,7 +17,7 @@ import axios from "axios";
 
 // Some JS on the page
 // storage.get().then(console.log);
-console.log('in xHome')
+console.log('in content/xHome')
 // data-testid="User-Name"
 
 const authorNotes = {}
@@ -56,7 +56,7 @@ const getUsernameOfTweet = (tweetNode): string | null => {
 const getAuthorTargetNotesAndStore = async (targetUsername: string) => {
   const { selfUsername } = await chrome.storage.local.get('selfUsername')
   const notes = await fetchAuthorTargetNotesViaTarget(selfUsername.toLowerCase(), targetUsername.toLowerCase())
-  if (notes.length > 0) {
+  if (notes?.length > 0) {
     console.log('notes', notes)
     authorNotes[targetUsername] = notes
     chrome.storage.local.set({ authorNotes })
