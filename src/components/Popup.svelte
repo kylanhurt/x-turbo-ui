@@ -1,11 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-    import { storage } from "../storage";
-    import { Button } from '$lib/components/ui/button/index.js';
-    import { checkIfValidated } from '../util';
     import axios from 'axios'
 
     const VITE_API_DOMAIN = import.meta.env.VITE_API_DOMAIN
+    const imageURL =  chrome.runtime.getURL('src/assets/sign-in-with-twitter.png')
 
     export let user
     let url
@@ -43,15 +41,18 @@
         await chrome.runtime.sendMessage({ type: "startValidationPolling", data: { url } })
         open(url, '_blank')
     }
-
+    
+    addEventListener("storage", (event) => {
+        console.log('storage event', event)
+    });
 </script>
 
 <div class="min-w-[250px] p-2">
     {#if user}
         {JSON.stringify(user)}
     {:else}
-        <button on:click={sendStartValidationPollingMessage}>
-            Popup Log in
-        </button>
+        <div on:click={sendStartValidationPollingMessage}>
+            <img src={imageURL} alt="Sign in with Twitter" />
+        </div>
     {/if}
 </div>

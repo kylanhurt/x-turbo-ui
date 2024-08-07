@@ -59,4 +59,10 @@ export default defineManifest(async (env) => ({
         },
     },
     permissions: ["storage", "sidePanel"] as chrome.runtime.ManifestPermissions[],
+    web_accessible_resources: [
+        {
+            resources: ['src/assets/sign-in-with-twitter.png'],
+            matches: ["https://*/*"],
+        }
+    ]
 }));
