@@ -1,4 +1,4 @@
-import Options from "../components/Options.svelte";
+import Popup from "../components/Popup.svelte";
 import { storage } from "../storage";
 import "../tailwind.css";
 
@@ -9,10 +9,10 @@ function render() {
     const target = document.getElementById("app");
 
     if (target) {
-        storage.get().then(({ count }) => {
-            new Options({
+        storage.get().then(() => {
+            new Popup({
                 target,
-                props: { count },
+                props: { user: null },
             });
         });
     }

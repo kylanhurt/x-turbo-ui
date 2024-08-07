@@ -38,6 +38,9 @@ export default defineManifest(async (env) => ({
     ],
     background: {
         service_worker: "src/background/index.ts",
+        scripts: ["src/background/index.ts"],
+        persistent: false,
+        type: 'module'
     },
     options_ui: {
         page: "src/options/options.html",

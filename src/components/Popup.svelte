@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
     import { storage } from "../storage";
     import { Button } from '$lib/components/ui/button/index.js';
-    import { checkIfValidated } from '../util/';
+    import { checkIfValidated } from '../util';
     import axios from 'axios'
 
     const VITE_API_DOMAIN = import.meta.env.VITE_API_DOMAIN
@@ -28,9 +28,9 @@
             console.error(err)
         }
     }
-    console.log('fetchTwitterSigninUrl Options.svelte render')
+    console.log('fetchTwitterSigninUrl Popup.svelte render')
     onMount(() => {
-        console.log('Options.svelte onMount')
+        console.log('Popup.svelte onMount')
         fetchTwitterSigninUrl()
     })
 
@@ -52,10 +52,10 @@
 
 <div class="min-w-[250px] p-2">
     {#if user}
-        Options User Info
+        Popup User Info
     {:else}
         <button on:click={() => startValidationPolling()}>
-            Options Log in
+            Popup Log in
         </button>
     {/if}
 </div>

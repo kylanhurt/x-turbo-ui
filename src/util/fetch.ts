@@ -12,7 +12,7 @@ export const fetchAuthorTargetNotesViaTarget = async (author: string, target: st
     })
     return data
   } catch (err) {
-    console.error('fetchUserTargetNotes error', err)
+    console.error('fetchUserTargetNotes error', JSON.stringify(err))
   }
 }
 
