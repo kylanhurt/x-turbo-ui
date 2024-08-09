@@ -49,7 +49,10 @@
 
 <div class="min-w-[250px] p-2">
     {#if user}
-        {JSON.stringify(user)}
+        <div>
+            <p>{user.userId}</p>
+            <p>{user.userName}</p>
+        </div>
     {:else}
         <div on:click={sendStartValidationPollingMessage}>
             <img src={imageURL} alt="Sign in with Twitter" />
